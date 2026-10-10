@@ -1,0 +1,91 @@
+<!-- 文件路径：miniprogram/pages/detail/detail.wxml -->
+<!-- 投票详情页 -->
+<view class="page">
+
+  <!-- 加载中骨架屏 -->
+  <view wx:if="{{loading}}" class="skeleton-card">
+    <view class="skeleton-line skeleton-title"></view>
+    <view class="skeleton-line skeleton-sub"></view>
+    <view class="skeleton-line skeleton-sub"></view>
+  </view>
+
+  <!-- 加载失败 / 投票不存在 -->
+  <view wx:elif="{{error}}" class="empty-wrap">
+    <view class="empty-icon">!</view>
+    <view class="empty-text">{{error}}</view>
+    <button class="btn-retry" bindtap="onRetry">重新加载</button>
+  </view>
+
+  <!-- 详情内容 -->
+  <block wx:elif="{{vote}}">
+
+    <!-- 发起人信息卡片 -->
+    <view class="card">
+      <view class="creator-row">
+        <image wx:if="{{vote.creatorAvatar}}" class="avatar" src="{{vote.creatorAvatar}}" mode="aspectFill" />
+        <view wx:else class="avatar avatar-default">微</view>
+        <view class="creator-info">
+          <view class="creator-name">{{vote.creatorName}}</view>
+          <view class="creator-time">发起于 {{vote.createdAtText}}</view>
+        </view>
+        <view class="badge {{active ? 'badge-active' : 'badge-ended'}}">{{active ? '进行中' : '已结束'}}</view>
+      </view>
+      <view class="question">{{vote.question}}</view>
+      <view class="deadline">{{deadline}}</view>
+    </view>
+
+    <!-- 选项区：进行中且未投票 → 可点击投票；否则展示结果 -->
+    <view class="card">
+      <block wx:if="{{active && !hasVoted}}">
+        <view class="tip">点击选项进行投票（单选，投后不可修改）</view>
+        <view
+          class="option-item option-clickable"
+          wx:for="{{vote.options}}"
+          wx:key="id"
+          data-id="{{item.id}}"
+          bindtap="onTapOption"
+          hover-class="option-hover"
+        >
+          <view class="option-radio"></view>
+          <view class="option-text">{{item.text}}</view>
+        </view>
+      </block>
+
+      <!-- 结果区：已投票或已过期 -->
+      <block wx:else>
+        <view class="tip">
+          {{hasVoted ? '你已投票，感谢参与' : '投票已结束'}}
+        </view>
+        <view class="option-item" wx:for="{{vote.options}}" wx:key="id">
+          <view class="option-result-head">
+            <view class="option-text">
+              {{item.text}}
+              <text wx:if="{{item.id === myOptionId}}" class="my-choice">（我的选择）</text>
+            </view>
+            <view class="option-num">{{item.count}}票 · {{item.percent}}%</view>
+          </view>
+          <view class="percent-track">
+            <view
+              class="percent-bar {{item.id === myOptionId ? 'percent-bar-mine' : ''}}"
+              style="width: {{item.percent}}%"
+            ></view>
+          </view>
+        </view>
+        <view class="total">共 {{vote.totalVotes}} 人参与</view>
+      </block>
+    </view>
+
+    <!-- 发起人操作区 -->
+    <view class="card" wx:if="{{canFinish || canDelete}}">
+      <view class="tip">发起人操作</view>
+      <view class="action-row">
+        <button wx:if="{{canFinish}}" class="action-btn action-warn" bindtap="onFinish">提前结束</button>
+        <button wx:if="{{canDelete}}" class="action-btn action-danger" bindtap="onDelete">删除投票</button>
+      </view>
+      <view wx:if="{{canDelete}}" class="action-hint">发起后10分钟内可删除，删除后不可恢复</view>
+    </view>
+
+    <!-- 分享按钮 -->
+    <button class="share-btn" open-type="share" hover-class="submit-hover">分享给好友</button>
+  </block>
+</view>

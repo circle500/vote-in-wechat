@@ -1,0 +1,20 @@
+# 依赖目录（云函数依赖在微信开发者工具上传时云端安装，本地 node_modules 不入库）
+node_modules/
+**/node_modules/
+
+# 系统文件
+.DS_Store
+Thumbs.db
+
+# 编辑器目录
+.idea/
+.vscode/
+
+# 微信开发者工具本地私有配置（含个人 appid 等信息，按需决定是否忽略）
+# project.private.config.json
+
+# WorkBuddy 工作区内部数据（非项目代码）
+.workbuddy/
+
+# 日志
+*.log

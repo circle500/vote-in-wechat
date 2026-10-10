@@ -1,0 +1,83 @@
+<!-- 文件路径：miniprogram/pages/create/create.wxml -->
+<!-- 发起投票页 -->
+<view class="page">
+
+  <!-- 头像昵称（微信头像昵称填写能力，不填则显示「微信用户」） -->
+  <view class="section">
+    <view class="section-title">我的身份（选填）</view>
+    <view class="identity-row">
+      <button class="avatar-btn" open-type="chooseAvatar" bind:chooseavatar="onChooseAvatar">
+        <image wx:if="{{avatarUrl}}" class="avatar-img" src="{{avatarUrl}}" mode="aspectFill" />
+        <view wx:else class="avatar-placeholder">选头像</view>
+      </button>
+      <input
+        class="nickname-input"
+        type="nickname"
+        placeholder="微信昵称（默认：微信用户）"
+        value="{{nickName}}"
+        bindblur="onNicknameInput"
+        maxlength="20"
+      />
+    </view>
+  </view>
+
+  <!-- 投票问题 -->
+  <view class="section">
+    <view class="section-title">投票问题 <text class="required">*</text></view>
+    <textarea
+      class="question-input"
+      placeholder="请输入投票问题（必填，最多50字）"
+      maxlength="50"
+      value="{{question}}"
+      bindinput="onQuestionInput"
+      auto-height
+    />
+    <view class="char-count">{{question.length}}/50</view>
+  </view>
+
+  <!-- 投票选项（2-10 个动态增删） -->
+  <view class="section">
+    <view class="section-title">投票选项 <text class="required">*</text>（2-10个）</view>
+    <view class="option-row" wx:for="{{options}}" wx:key="index">
+      <input
+        class="option-input"
+        placeholder="选项{{index + 1}}"
+        value="{{item}}"
+        data-idx="{{index}}"
+        bindinput="onOptionInput"
+        maxlength="30"
+      />
+      <view
+        class="option-del {{options.length <= 2 ? 'option-del-disabled' : ''}}"
+        data-idx="{{index}}"
+        bindtap="onRemoveOption"
+      >−</view>
+    </view>
+    <view
+      class="option-add {{options.length >= 10 ? 'option-add-disabled' : ''}}"
+      bindtap="onAddOption"
+    >+ 添加选项</view>
+  </view>
+
+  <!-- 过期时间（必须晚于当前时间） -->
+  <view class="section">
+    <view class="section-title">截止时间 <text class="required">*</text></view>
+    <view class="picker-row">
+      <picker mode="date" start="{{today}}" end="{{maxDate}}" value="{{expireDate}}" bindchange="onDateChange">
+        <view class="picker-value {{expireDate ? '' : 'picker-placeholder'}}">
+          {{expireDate || '选择日期'}}
+        </view>
+      </picker>
+      <picker mode="time" value="{{expireTime}}" bindchange="onTimeChange">
+        <view class="picker-value {{expireTime ? '' : 'picker-placeholder'}}">
+          {{expireTime || '选择时间'}}
+        </view>
+      </picker>
+    </view>
+  </view>
+
+  <!-- 提交按钮 -->
+  <button class="submit-btn" disabled="{{submitting}}" bindtap="onSubmit" hover-class="submit-hover">
+    {{submitting ? '提交中...' : '发起投票'}}
+  </button>
+</view>

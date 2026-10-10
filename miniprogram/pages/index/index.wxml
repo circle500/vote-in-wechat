@@ -1,0 +1,71 @@
+<!-- 文件路径：miniprogram/pages/index/index.wxml -->
+<!-- 投票列表页 -->
+<view class="page">
+
+  <!-- 顶部 Tab 栏 -->
+  <view class="tab-bar">
+    <view
+      wx:for="{{tabs}}"
+      wx:key="key"
+      class="tab-item {{tab === item.key ? 'tab-active' : ''}}"
+      data-key="{{item.key}}"
+      bindtap="onSwitchTab"
+    >{{item.label}}</view>
+  </view>
+
+  <!-- 首屏加载骨架屏 -->
+  <view wx:if="{{loading}}" class="skeleton-wrap">
+    <view class="skeleton-card" wx:for="{{[1,2,3]}}" wx:key="*this">
+      <view class="skeleton-line skeleton-title"></view>
+      <view class="skeleton-line skeleton-sub"></view>
+    </view>
+  </view>
+
+  <!-- 首屏加载失败 -->
+  <view wx:elif="{{error}}" class="empty-wrap">
+    <view class="empty-icon">!</view>
+    <view class="empty-text">{{error}}</view>
+    <button class="btn-retry" bindtap="onRetry">重新加载</button>
+  </view>
+
+  <!-- 空状态 -->
+  <view wx:elif="{{list.length === 0}}" class="empty-wrap">
+    <view class="empty-icon">∅</view>
+    <view class="empty-text">{{tab === 'all' ? '还没有投票，快来发起一个吧' : '该分类下暂无投票'}}</view>
+  </view>
+
+  <!-- 投票列表 -->
+  <block wx:else>
+    <view
+      class="vote-card"
+      wx:for="{{list}}"
+      wx:key="_id"
+      data-id="{{item._id}}"
+      bindtap="goDetail"
+      hover-class="card-hover"
+    >
+      <view class="card-head">
+        <view class="badge {{item.active ? 'badge-active' : 'badge-ended'}}">{{item.statusText}}</view>
+        <view class="card-deadline">{{item.deadline}}</view>
+      </view>
+      <view class="card-question">{{item.question}}</view>
+      <view class="card-foot">
+        <view class="card-creator">
+          <image wx:if="{{item.creatorAvatar}}" class="avatar" src="{{item.creatorAvatar}}" mode="aspectFill" />
+          <view wx:else class="avatar avatar-default">微</view>
+          <text class="creator-name">{{item.creatorName}}</text>
+        </view>
+        <view class="card-meta">{{item.totalVotes}}人参与 · {{item.timeText}}</view>
+      </view>
+    </view>
+
+    <!-- 底部加载状态 -->
+    <view class="load-foot">
+      <text wx:if="{{loadingMore}}">加载中...</text>
+      <text wx:elif="{{!hasMore}}">没有更多了</text>
+    </view>
+  </block>
+
+  <!-- 右下角发起按钮 -->
+  <view class="fab" bindtap="goCreate" hover-class="fab-hover">+</view>
+</view>

@@ -1,0 +1,141 @@
+/* 文件路径：miniprogram/pages/create/create.wxss */
+/* 发起投票页样式（微信原生表单风格） */
+
+.page {
+  min-height: 100vh;
+  background: #f6f6f6;
+  padding: 24rpx 24rpx 60rpx;
+}
+
+/* 分组卡片 */
+.section {
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 28rpx 32rpx;
+  margin-bottom: 24rpx;
+}
+.section-title {
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #1a1a1a;
+  margin-bottom: 24rpx;
+}
+.required { color: #fa5151; }
+
+/* 头像昵称 */
+.identity-row { display: flex; align-items: center; }
+.avatar-btn {
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: 50%;
+  padding: 0;
+  margin: 0 24rpx 0 0;
+  overflow: hidden;
+  background: #f0f0f0;
+  flex-shrink: 0;
+}
+.avatar-btn::after { border: none; }
+.avatar-img { width: 96rpx; height: 96rpx; }
+.avatar-placeholder {
+  width: 96rpx;
+  height: 96rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22rpx;
+  color: #999;
+}
+.nickname-input {
+  flex: 1;
+  height: 80rpx;
+  background: #f6f6f6;
+  border-radius: 12rpx;
+  padding: 0 24rpx;
+  font-size: 28rpx;
+}
+
+/* 问题输入 */
+.question-input {
+  width: 100%;
+  min-height: 120rpx;
+  background: #f6f6f6;
+  border-radius: 12rpx;
+  padding: 20rpx 24rpx;
+  font-size: 30rpx;
+  box-sizing: border-box;
+}
+.char-count {
+  text-align: right;
+  font-size: 22rpx;
+  color: #999;
+  margin-top: 12rpx;
+}
+
+/* 选项 */
+.option-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+.option-input {
+  flex: 1;
+  height: 80rpx;
+  background: #f6f6f6;
+  border-radius: 12rpx;
+  padding: 0 24rpx;
+  font-size: 28rpx;
+}
+.option-del {
+  width: 56rpx;
+  height: 56rpx;
+  border-radius: 50%;
+  background: #fbeaea;
+  color: #fa5151;
+  font-size: 40rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 20rpx;
+  flex-shrink: 0;
+}
+.option-del-disabled { opacity: 0.3; }
+.option-add {
+  text-align: center;
+  color: #07c160;
+  font-size: 28rpx;
+  padding: 24rpx 0 8rpx;
+  border-top: 1rpx solid #f0f0f0;
+}
+.option-add-disabled { color: #999; }
+
+/* 时间选择 */
+.picker-row { display: flex; }
+.picker-value {
+  flex: 1;
+  height: 80rpx;
+  line-height: 80rpx;
+  background: #f6f6f6;
+  border-radius: 12rpx;
+  padding: 0 24rpx;
+  font-size: 28rpx;
+  color: #1a1a1a;
+  margin-right: 20rpx;
+  box-sizing: border-box;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.picker-row picker:last-child .picker-value { margin-right: 0; }
+.picker-row picker { flex: 1; }
+.picker-placeholder { color: #999; }
+
+/* 提交按钮 */
+.submit-btn {
+  background: #07c160;
+  color: #fff;
+  font-size: 32rpx;
+  border-radius: 44rpx;
+  line-height: 88rpx;
+  margin-top: 16rpx;
+}
+.submit-btn[disabled] { background: #95d5b2; color: #fff; }
+.submit-hover { opacity: 0.85; }

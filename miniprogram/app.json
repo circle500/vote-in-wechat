@@ -1,0 +1,15 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/create/create",
+    "pages/detail/detail"
+  ],
+  "window": {
+    "navigationBarBackgroundColor": "#FFFFFF",
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "投票",
+    "backgroundColor": "#F6F6F6"
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}

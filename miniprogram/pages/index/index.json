@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "投票",
+  "enablePullDownRefresh": true,
+  "onReachBottomDistance": 80,
+  "backgroundTextStyle": "dark",
+  "backgroundColor": "#F6F6F6"
+}

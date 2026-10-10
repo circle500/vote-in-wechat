@@ -1,0 +1,11 @@
+/* 文件路径：miniprogram/app.wxss */
+/* 全局样式：微信原生风格基调 */
+
+page {
+  background: #f6f6f6;
+  font-size: 28rpx;
+  color: #1a1a1a;
+  font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+}
+
+/* 微信主色，供各页面参考：#07C160 */

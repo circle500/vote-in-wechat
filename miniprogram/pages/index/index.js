@@ -116,5 +116,13 @@ Page({
   goDetail(e) {
     const id = e.currentTarget.dataset.id;
     wx.navigateTo({ url: '/pages/detail/detail?id=' + id });
+  },
+
+  // 分享小程序首页（详情页另有专属分享，直达具体投票）
+  onShareAppMessage() {
+    return {
+      title: '快来发起和参与投票吧',
+      path: '/pages/index/index'
+    };
   }
 });

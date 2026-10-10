@@ -3,7 +3,7 @@
   "cloudfunctionRoot": "cloudfunctions/",
   "compileType": "miniprogram",
   "libVersion": "latest",
-  "appid": "wx33d8cd13bbfa31a4",
+  "appid": "wx0d773cfd2665c16b",
   "projectname": "vote-miniprogram",
   "setting": {
     "es6": true,

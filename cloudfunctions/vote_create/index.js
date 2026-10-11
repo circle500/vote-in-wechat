@@ -14,7 +14,7 @@ const MIN_DURATION = 60 * 1000; // 过期时间至少晚于当前 1 分钟
 exports.main = async (event) => {
   // 静默登录：从云函数上下文直接获取 openid，无需前端传参
   const { OPENID } = cloud.getWXContext();
-  const { question, options, expireAt, creatorName, creatorAvatar } = event;
+  const { question, options, expireAt, creatorName, creatorAvatar, questionImage } = event;
   const now = Date.now();
 
   try {
@@ -39,7 +39,16 @@ exports.main = async (event) => {
       return { code: 'INVALID_EXPIRE', message: '过期时间必须晚于当前时间' };
     }
 
-    // 4. 组装文档：昵称头像未授权时显示「微信用户」+ 空头像
+    // 4. 校验问题图片（选填）：必须是云存储 fileID 格式或空，防止写入任意字符串
+    let qImg = '';
+    if (questionImage) {
+      if (typeof questionImage !== 'string' || questionImage.indexOf('cloud://') !== 0 || questionImage.length > 300) {
+        return { code: 'INVALID_IMAGE', message: '问题图片格式错误' };
+      }
+      qImg = questionImage;
+    }
+
+    // 5. 组装文档：昵称头像未授权时显示「微信用户」+ 空头像
     const name = (creatorName || '').trim().slice(0, 20) || '微信用户';
     const avatar = typeof creatorAvatar === 'string' ? creatorAvatar : '';
     const doc = {
@@ -47,6 +56,7 @@ exports.main = async (event) => {
       creatorName: name,
       creatorAvatar: avatar,
       question: q,
+      questionImage: qImg,                   // 问题配图（选填），云存储 fileID
       options: opts.map((text, i) => ({ id: 'opt_' + (i + 1), text, count: 0 })),
       totalVotes: 0,
       isMultiple: false,                     // 当前仅支持单选，字段预留

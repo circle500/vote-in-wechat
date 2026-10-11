@@ -64,6 +64,19 @@ Page({
     });
   },
 
+  // 点击问题配图查看大图
+  onPreviewQuestionImage() {
+    const url = this.data.vote && this.data.vote.questionImage;
+    if (!url) return;
+    wx.previewImage({ urls: [url] });
+  },
+
+  // 问题图片加载失败（如云存储文件已被清理）：隐藏图片区域
+  onQuestionImageError(e) {
+    console.warn('问题图片加载失败', e.detail);
+    this.setData({ 'vote.questionImage': '' });
+  },
+
   // 点击选项：仅进行中且未投票时可操作，二次确认防止误触
   onTapOption(e) {
     if (!this.data.active || this.data.hasVoted || this.data.voting) return;

@@ -31,6 +31,15 @@
         <view class="badge {{active ? 'badge-active' : 'badge-ended'}}">{{active ? '进行中' : '已结束'}}</view>
       </view>
       <view class="question">{{vote.question}}</view>
+      <!-- 问题配图（如有），点击可查看大图 -->
+      <image
+        wx:if="{{vote.questionImage}}"
+        class="question-image"
+        src="{{vote.questionImage}}"
+        mode="widthFix"
+        bindtap="onPreviewQuestionImage"
+        binderror="onQuestionImageError"
+      />
       <view class="deadline">{{deadline}}</view>
     </view>
 

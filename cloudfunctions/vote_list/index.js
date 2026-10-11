@@ -23,10 +23,11 @@ exports.main = async (event) => {
       condition.createdAt = _.lt(cursor); // 游标分页：取比上一页最后一条更早的数据
     }
 
-    // 多取 1 条用于判断是否还有下一页；field 裁剪掉 creatorOpenid，防止泄露
+    // 多取 1 条用于判断是否还有下一页；
+    // field 裁剪：creatorOpenid 防泄露，questionImage 列表页不展示故不返回（减少流量）
     const res = await db.collection('votes')
       .where(condition)
-      .field({ creatorOpenid: false })
+      .field({ creatorOpenid: false, questionImage: false })
       .orderBy('createdAt', 'desc')
       .limit(PAGE_SIZE + 1)
       .get();

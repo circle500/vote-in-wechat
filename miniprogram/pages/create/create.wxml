@@ -33,6 +33,16 @@
       auto-height
     />
     <view class="char-count">{{question.length}}/50</view>
+
+    <!-- 问题配图（选填，最多 1 张，不超过 5MB） -->
+    <view wx:if="{{questionImage}}" class="image-preview-wrap">
+      <image class="image-preview" src="{{questionImage}}" mode="aspectFill" bindtap="onPreviewImage" />
+      <view class="image-del" bindtap="onRemoveImage">×</view>
+    </view>
+    <view wx:else class="image-add" bindtap="onChooseImage" hover-class="image-add-hover">
+      <view class="image-add-icon">+</view>
+      <view class="image-add-text">添加图片（选填）</view>
+    </view>
   </view>
 
   <!-- 投票选项（2-10 个动态增删） -->

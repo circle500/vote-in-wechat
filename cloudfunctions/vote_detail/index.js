@@ -22,15 +22,23 @@ exports.main = async (event) => {
     const hasVoted = rec.data.length > 0;
     const myOptionId = hasVoted ? rec.data[0].optionIds[0] : '';
 
-    // 头像 fileID 转临时访问链接（理由同 vote_list：绕过免费套餐的客户端存储权限限制）
+    // 头像与问题图片 fileID 转临时访问链接
+    // 免费套餐下客户端受存储权限「仅创建者可读写」限制，看不到他人文件；
+    // 云函数以管理员身份调用 getTempFileURL 生成签名链接，前端直接加载即可绕过该限制
     let avatarUrl = vote.creatorAvatar || '';
-    if (avatarUrl.indexOf('cloud://') === 0) {
+    let questionImageUrl = vote.questionImage || '';
+    const fileIDs = [avatarUrl, questionImageUrl].filter(id => id && id.indexOf('cloud://') === 0);
+    if (fileIDs.length > 0) {
       try {
-        const urlRes = await cloud.getTempFileURL({ fileList: [avatarUrl] });
-        const f = (urlRes.fileList || [])[0];
-        if (f && f.status === 0) avatarUrl = f.tempFileURL;
+        const urlRes = await cloud.getTempFileURL({ fileList: fileIDs });
+        const urlMap = {};
+        (urlRes.fileList || []).forEach(f => {
+          if (f.status === 0) urlMap[f.fileID] = f.tempFileURL;
+        });
+        if (urlMap[avatarUrl]) avatarUrl = urlMap[avatarUrl];
+        if (urlMap[questionImageUrl]) questionImageUrl = urlMap[questionImageUrl];
       } catch (e) {
-        console.error('头像临时链接生成失败', e); // 失败保留 fileID，前端有默认头像兜底
+        console.error('临时链接生成失败', e); // 失败保留 fileID，前端有兜底处理
       }
     }
 
@@ -42,6 +50,7 @@ exports.main = async (event) => {
         creatorName: vote.creatorName,
         creatorAvatar: avatarUrl,
         question: vote.question,
+        questionImage: questionImageUrl,
         options: vote.options,
         totalVotes: vote.totalVotes,
         isMultiple: vote.isMultiple,

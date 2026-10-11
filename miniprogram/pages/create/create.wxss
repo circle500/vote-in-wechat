@@ -71,6 +71,54 @@
   margin-top: 12rpx;
 }
 
+/* 问题配图 */
+.image-add {
+  margin-top: 16rpx;
+  height: 160rpx;
+  border: 2rpx dashed #ddd;
+  border-radius: 12rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.image-add-hover { background: #f9f9f9; }
+.image-add-icon {
+  font-size: 48rpx;
+  color: #bbb;
+  line-height: 1;
+}
+.image-add-text {
+  font-size: 24rpx;
+  color: #999;
+  margin-top: 8rpx;
+}
+.image-preview-wrap {
+  margin-top: 16rpx;
+  position: relative;
+  width: 320rpx;
+  height: 320rpx;
+}
+.image-preview {
+  width: 320rpx;
+  height: 320rpx;
+  border-radius: 12rpx;
+}
+.image-del {
+  position: absolute;
+  top: -16rpx;
+  right: -16rpx;
+  width: 44rpx;
+  height: 44rpx;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  font-size: 32rpx;
+  line-height: 44rpx;
+  text-align: center;
+  z-index: 2;
+}
+
 /* 选项 */
 .option-row {
   display: flex;

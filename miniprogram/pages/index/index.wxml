@@ -69,6 +69,6 @@
   <!-- 右下角发起按钮（位置抬高，下方放更新公告入口） -->
   <view class="fab" bindtap="goCreate" hover-class="fab-hover">+</view>
   <view class="notice-entry" bindtap="goNotice" hover-class="notice-hover">
-    <text class="notice-text">更新公告</text>
+    <image class="notice-icon" src="/images/notice-icon.png" mode="aspectFit" />
   </view>
 </view>

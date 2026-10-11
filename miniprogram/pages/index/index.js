@@ -119,6 +119,11 @@ Page({
     wx.navigateTo({ url: '/pages/create/create' });
   },
 
+  // 跳转更新公告
+  goNotice() {
+    wx.navigateTo({ url: '/pages/notice/notice' });
+  },
+
   // 跳转详情页
   goDetail(e) {
     const id = e.currentTarget.dataset.id;

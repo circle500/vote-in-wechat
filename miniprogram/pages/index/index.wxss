@@ -150,11 +150,11 @@
   padding: 32rpx 0;
 }
 
-/* 右下角发起按钮 */
+/* 右下角发起按钮（抬高，为下方公告入口留出空间） */
 .fab {
   position: fixed;
   right: 40rpx;
-  bottom: 60rpx;
+  bottom: 210rpx;
   width: 100rpx;
   height: 100rpx;
   border-radius: 50%;
@@ -168,3 +168,19 @@
   z-index: 20;
 }
 .fab-hover { opacity: 0.85; }
+
+/* 更新公告入口（位于 + 按钮下方） */
+.notice-entry {
+  position: fixed;
+  right: 40rpx;
+  bottom: 110rpx;
+  padding: 12rpx 24rpx;
+  background: #fff;
+  border: 1rpx solid #e5e5e5;
+  border-radius: 32rpx;
+  font-size: 24rpx;
+  color: #666;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.06);
+  z-index: 20;
+}
+.notice-hover { opacity: 0.7; }

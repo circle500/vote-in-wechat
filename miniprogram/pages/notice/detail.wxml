@@ -1,0 +1,12 @@
+<!-- 文件路径：miniprogram/pages/notice/detail.wxml -->
+<!-- 更新公告详情页 -->
+<view class="page">
+  <block wx:if="{{notice}}">
+    <view class="title">{{notice.title}}</view>
+    <view class="date">{{notice.date}}</view>
+    <view class="content">
+      <view class="line" wx:for="{{notice.content}}" wx:key="index">{{item}}</view>
+    </view>
+  </block>
+  <view wx:else class="empty">公告不存在或已删除</view>
+</view>

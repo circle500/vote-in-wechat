@@ -1,0 +1,54 @@
+/* 文件路径：miniprogram/pages/notice/notice.wxss */
+/* 更新公告列表页样式（贴近微信原生「功能介绍」） */
+
+.page {
+  min-height: 100vh;
+  background: #fff;
+}
+
+/* 单条公告 */
+.cell {
+  display: flex;
+  align-items: center;
+  padding: 32rpx;
+  position: relative;
+}
+/* 细分隔线（左侧缩进，与微信一致） */
+.cell::after {
+  content: '';
+  position: absolute;
+  left: 32rpx;
+  right: 0;
+  bottom: 0;
+  height: 1rpx;
+  background: #ebedf0;
+}
+.cell:last-child::after { display: none; }
+.cell-hover { background: #f6f6f6; }
+
+.cell-body { flex: 1; min-width: 0; }
+.cell-title {
+  font-size: 32rpx;
+  font-weight: 500;
+  color: #1a1a1a;
+  line-height: 1.4;
+}
+.cell-date {
+  font-size: 24rpx;
+  color: #999;
+  margin-top: 8rpx;
+}
+.cell-arrow {
+  font-size: 36rpx;
+  color: #c8c8c8;
+  margin-left: 20rpx;
+  flex-shrink: 0;
+}
+
+/* 空状态 */
+.empty {
+  text-align: center;
+  color: #999;
+  font-size: 28rpx;
+  padding-top: 200rpx;
+}

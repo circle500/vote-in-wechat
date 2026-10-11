@@ -2,7 +2,9 @@
   "pages": [
     "pages/index/index",
     "pages/create/create",
-    "pages/detail/detail"
+    "pages/detail/detail",
+    "pages/notice/notice",
+    "pages/notice/detail"
   ],
   "window": {
     "navigationBarBackgroundColor": "#FFFFFF",

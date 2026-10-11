@@ -1,0 +1,20 @@
+<!-- 文件路径：miniprogram/pages/notice/notice.wxml -->
+<!-- 更新公告列表页（仿微信「功能介绍」：白底、标题+日期、右侧箭头、细分隔线） -->
+<view class="page">
+  <view
+    class="cell"
+    wx:for="{{list}}"
+    wx:key="id"
+    data-id="{{item.id}}"
+    bindtap="goDetail"
+    hover-class="cell-hover"
+  >
+    <view class="cell-body">
+      <view class="cell-title">{{item.title}}</view>
+      <view class="cell-date">{{item.date}}</view>
+    </view>
+    <view class="cell-arrow">›</view>
+  </view>
+
+  <view wx:if="{{list.length === 0}}" class="empty">暂无更新公告</view>
+</view>

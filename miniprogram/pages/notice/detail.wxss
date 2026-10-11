@@ -1,0 +1,47 @@
+/* 文件路径：miniprogram/pages/notice/detail.wxss */
+/* 更新公告详情页样式（微信图文风格） */
+
+.page {
+  min-height: 100vh;
+  background: #fff;
+  padding: 40rpx 32rpx 60rpx;
+}
+
+.title {
+  font-size: 38rpx;
+  font-weight: 500;
+  color: #1a1a1a;
+  line-height: 1.4;
+}
+.date {
+  font-size: 26rpx;
+  color: #999;
+  margin: 16rpx 0 40rpx;
+}
+
+.content { line-height: 1.8; }
+.line {
+  font-size: 30rpx;
+  color: #333;
+  margin-bottom: 20rpx;
+  padding-left: 28rpx;
+  position: relative;
+}
+/* 列表项前的圆点 */
+.line::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 24rpx;
+  width: 10rpx;
+  height: 10rpx;
+  border-radius: 50%;
+  background: #07c160;
+}
+
+.empty {
+  text-align: center;
+  color: #999;
+  font-size: 28rpx;
+  padding-top: 200rpx;
+}

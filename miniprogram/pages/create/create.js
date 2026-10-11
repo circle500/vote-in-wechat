@@ -91,7 +91,9 @@ Page({
       });
       return res.fileID;
     } catch (e) {
-      console.warn('头像上传失败，使用默认头像', e);
+      // 上传失败必须显式暴露：打印完整错误并提示用户，避免静默降级后排查无门
+      console.error('头像上传失败，fileID 将为空', e);
+      wx.showToast({ title: '头像上传失败，将使用默认头像', icon: 'none', duration: 2500 });
       return '';
     }
   },

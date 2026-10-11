@@ -40,6 +40,16 @@
   background: #07c160;
 }
 
+/* 数据看板入口（Tab 栏右侧） */
+.stats-entry {
+  width: 96rpx;
+  text-align: center;
+  padding: 24rpx 0;
+  font-size: 26rpx;
+  color: #999;
+  flex-shrink: 0;
+}
+
 /* 骨架屏 */
 .skeleton-wrap { padding: 24rpx; }
 .skeleton-card {

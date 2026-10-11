@@ -112,6 +112,11 @@ Page({
     wx.navigateTo({ url: '/pages/create/create' });
   },
 
+  // 跳转数据看板（云函数内做管理员校验，非管理员进入会显示无权限提示）
+  goStats() {
+    wx.navigateTo({ url: '/pages/stats/stats' });
+  },
+
   // 跳转详情页
   goDetail(e) {
     const id = e.currentTarget.dataset.id;

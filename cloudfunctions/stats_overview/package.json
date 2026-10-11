@@ -1,9 +1,0 @@
-{
-  "name": "stats_overview",
-  "version": "1.0.0",
-  "description": "数据看板聚合统计（管理员专属）",
-  "main": "index.js",
-  "dependencies": {
-    "wx-server-sdk": "~2.6.3"
-  }
-}

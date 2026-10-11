@@ -22,13 +22,25 @@ exports.main = async (event) => {
     const hasVoted = rec.data.length > 0;
     const myOptionId = hasVoted ? rec.data[0].optionIds[0] : '';
 
+    // 头像 fileID 转临时访问链接（理由同 vote_list：绕过免费套餐的客户端存储权限限制）
+    let avatarUrl = vote.creatorAvatar || '';
+    if (avatarUrl.indexOf('cloud://') === 0) {
+      try {
+        const urlRes = await cloud.getTempFileURL({ fileList: [avatarUrl] });
+        const f = (urlRes.fileList || [])[0];
+        if (f && f.status === 0) avatarUrl = f.tempFileURL;
+      } catch (e) {
+        console.error('头像临时链接生成失败', e); // 失败保留 fileID，前端有默认头像兜底
+      }
+    }
+
     // 3. 返回前裁剪敏感字段：creatorOpenid 绝不下发，改为返回 isCreator 布尔值
     return {
       code: 'OK',
       vote: {
         _id: vote._id,
         creatorName: vote.creatorName,
-        creatorAvatar: vote.creatorAvatar,
+        creatorAvatar: avatarUrl,
         question: vote.question,
         options: vote.options,
         totalVotes: vote.totalVotes,

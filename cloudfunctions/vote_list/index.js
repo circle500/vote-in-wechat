@@ -34,6 +34,28 @@ exports.main = async (event) => {
     const hasMore = res.data.length > PAGE_SIZE;
     const list = res.data.slice(0, PAGE_SIZE);
 
+    // 头像 fileID 转临时访问链接：
+    // 免费套餐下客户端受存储权限「仅创建者可读写」限制，看不到他人头像；
+    // 云函数以管理员身份调用 getTempFileURL 生成签名链接，前端直接加载即可绕过该限制
+    const fileIDs = list
+      .map(v => v.creatorAvatar)
+      .filter(id => id && id.indexOf('cloud://') === 0);
+    if (fileIDs.length > 0) {
+      try {
+        const urlRes = await cloud.getTempFileURL({ fileList: fileIDs.slice(0, 50) });
+        const urlMap = {};
+        (urlRes.fileList || []).forEach(f => {
+          if (f.status === 0) urlMap[f.fileID] = f.tempFileURL;
+        });
+        list.forEach(v => {
+          if (urlMap[v.creatorAvatar]) v.creatorAvatar = urlMap[v.creatorAvatar];
+        });
+      } catch (e) {
+        // 转换失败保留原 fileID，前端 binderror 会降级为默认头像
+        console.error('头像临时链接生成失败', e);
+      }
+    }
+
     return {
       code: 'OK',
       list,

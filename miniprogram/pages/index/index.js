@@ -107,6 +107,13 @@ Page({
     this.loadFirst();
   },
 
+  // 头像加载失败（如云存储文件已删除）时降级为默认头像
+  onAvatarError(e) {
+    const idx = e.currentTarget.dataset.idx;
+    const key = `list[${idx}].creatorAvatar`;
+    this.setData({ [key]: '' });
+  },
+
   // 跳转发起投票页
   goCreate() {
     wx.navigateTo({ url: '/pages/create/create' });

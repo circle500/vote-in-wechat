@@ -51,7 +51,7 @@
       <view class="card-question">{{item.question}}</view>
       <view class="card-foot">
         <view class="card-creator">
-          <image wx:if="{{item.creatorAvatar}}" class="avatar" src="{{item.creatorAvatar}}" mode="aspectFill" />
+          <image wx:if="{{item.creatorAvatar}}" class="avatar" src="{{item.creatorAvatar}}" mode="aspectFill" data-idx="{{index}}" binderror="onAvatarError" />
           <view wx:else class="avatar avatar-default">微</view>
           <text class="creator-name">{{item.creatorName}}</text>
         </view>

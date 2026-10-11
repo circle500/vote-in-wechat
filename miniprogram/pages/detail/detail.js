@@ -156,6 +156,11 @@ Page({
     this.load();
   },
 
+  // 头像加载失败（如云存储文件已删除）时降级为默认头像
+  onAvatarError() {
+    this.setData({ 'vote.creatorAvatar': '' });
+  },
+
   // 分享卡片直达详情页
   onShareAppMessage() {
     const q = this.data.vote ? this.data.vote.question : '快来参与投票';

@@ -22,7 +22,7 @@
     <!-- 发起人信息卡片 -->
     <view class="card">
       <view class="creator-row">
-        <image wx:if="{{vote.creatorAvatar}}" class="avatar" src="{{vote.creatorAvatar}}" mode="aspectFill" />
+        <image wx:if="{{vote.creatorAvatar}}" class="avatar" src="{{vote.creatorAvatar}}" mode="aspectFill" binderror="onAvatarError" />
         <view wx:else class="avatar avatar-default">微</view>
         <view class="creator-info">
           <view class="creator-name">{{vote.creatorName}}</view>

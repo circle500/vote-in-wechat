@@ -169,24 +169,20 @@
 }
 .fab-hover { opacity: 0.85; }
 
-/* 更新公告入口（圆形，与上方 + 按钮同轴心对齐） */
+/* 更新公告入口（圆形徽章图标，与上方 + 按钮同轴心对齐） */
 .notice-entry {
   position: fixed;
   right: 30rpx;          /* 120rpx 宽，中心与 100rpx 宽的 + 按钮对齐 */
   bottom: 66rpx;         /* 紧邻 + 按钮下方，间距 24rpx */
   width: 120rpx;
   height: 120rpx;
-  border-radius: 50%;
-  background: #fff;
-  border: 1rpx solid #e5e5e5;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.06);
   z-index: 20;
 }
 .notice-icon {
-  width: 76rpx;
-  height: 76rpx;
+  width: 120rpx;         /* 徽章自带白底黑环，铺满整个按钮 */
+  height: 120rpx;
 }
 .notice-hover { opacity: 0.7; }

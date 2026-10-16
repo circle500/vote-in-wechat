@@ -12,8 +12,9 @@ const db = cloud.database();
 const _ = db.command;
 
 // 管理员白名单：openid 不在名单内一律拒绝（防止工具页被普通用户利用）
+// 如需增加管理员，把对方 openid 追加到数组即可（openid 可在 vote_records 表中查到）
 const ADMIN_OPENIDS = [
-  'o6zAJswckuTdOS0Jmj_j9Ju0Pdos'
+  'oLuoGxlQ-xDmrpvk9GuFUjAhPdZw'
 ];
 
 const MAX_FETCH_SIZE = 2 * 1024 * 1024; // 单次下载上限 2MB（头像场景远够）

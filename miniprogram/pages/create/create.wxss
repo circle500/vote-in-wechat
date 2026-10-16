@@ -25,20 +25,28 @@
 /* 头像昵称 */
 .identity-row { display: flex; align-items: center; }
 .avatar-btn {
-  width: 96rpx;
-  height: 96rpx;
+  /* !important 用于压过微信 button 组件的默认宽度，否则按钮被撑成宽椭圆 */
+  width: 112rpx !important;
+  min-width: 112rpx !important;
+  max-width: 112rpx !important;
+  height: 112rpx;
   border-radius: 50%;
   padding: 0;
   margin: 0 24rpx 0 0;
   overflow: hidden;
   background: #f0f0f0;
   flex-shrink: 0;
+  box-sizing: border-box;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .avatar-btn::after { border: none; }
-.avatar-img { width: 96rpx; height: 96rpx; }
+.avatar-img { width: 112rpx; height: 112rpx; }
 .avatar-placeholder {
-  width: 96rpx;
-  height: 96rpx;
+  width: 112rpx;
+  height: 112rpx;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -47,7 +55,7 @@
 }
 .nickname-input {
   flex: 1;
-  height: 80rpx;
+  height: 88rpx;
   background: #f6f6f6;
   border-radius: 12rpx;
   padding: 0 24rpx;

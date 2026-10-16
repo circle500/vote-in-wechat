@@ -10,7 +10,9 @@ const IMAGE_MAX_SIZE = 5 * 1024 * 1024; // 问题图片最大 5MB
 
 Page({
   data: {
-    avatarUrl: '',    // 头像（chooseAvatar 返回的临时路径）
+    avatarUrl: '',    // 头像（归一化后的临时路径）
+    avatarExt: 'jpg', // 头像扩展名（归一化成功为 jpg）
+    imageExt: 'jpg',  // 问题配图扩展名（归一化成功为 jpg）
     nickName: '',     // 昵称
     question: '',     // 投票问题
     questionImage: '',// 问题配图（本地临时路径，选填，最多 1 张）
@@ -31,9 +33,66 @@ Page({
     this.setData({ today: fmt(now), maxDate: fmt(nextYear) });
   },
 
-  // 微信头像昵称填写能力：选择头像
-  onChooseAvatar(e) {
-    this.setData({ avatarUrl: e.detail.avatarUrl });
+  /**
+   * 图片色彩归一化：解码原图后重新编码为标准 sRGB JPEG
+   * 解决的问题：iOS 相册的 HEIC 格式、Display P3 广色域照片直接上传后，
+   * 渲染端按 sRGB 解码时色彩空间不匹配，会出现整体偏色（典型表现为发绿）。
+   * 经画布重新编码后颜色被规范化，任何机型看到的颜色都一致。
+   * @param {string} url 原图临时路径
+   * @param {number} maxSize 最大边长（超出按比例缩小）
+   * @returns {Promise<{path: string, ext: string}>} 归一化后的路径与扩展名
+   */
+  normalizeImage(url, maxSize) {
+    return new Promise((resolve) => {
+      const rawExt = ((url.split('.').pop() || 'jpg').split('?')[0] || 'jpg').toLowerCase();
+      // 任何环节失败都降级为原图，绝不阻塞用户操作
+      const fallback = () => resolve({ path: url, ext: rawExt });
+      try {
+        wx.createSelectorQuery().in(this)
+          .select('#normalizeCanvas')
+          .fields({ node: true, size: true })
+          .exec((res) => {
+            const canvas = res && res[0] && res[0].node;
+            if (!canvas) return fallback();
+            const ctx = canvas.getContext('2d');
+            const img = canvas.createImage();
+            img.onload = () => {
+              try {
+                const sw = img.width || 1;
+                const sh = img.height || 1;
+                const scale = Math.min(1, maxSize / Math.max(sw, sh));
+                const w = Math.max(1, Math.round(sw * scale));
+                const h = Math.max(1, Math.round(sh * scale));
+                // 重新赋值宽高会清空画布，必须在 drawImage 之前设置
+                canvas.width = w;
+                canvas.height = h;
+                ctx.drawImage(img, 0, 0, w, h);
+                wx.canvasToTempFilePath({
+                  canvas,
+                  fileType: 'jpg',
+                  quality: 0.92,
+                  success: (r) => resolve({ path: r.tempFilePath, ext: 'jpg' }),
+                  fail: fallback
+                });
+              } catch (err) {
+                console.warn('图片归一化失败，使用原图', err);
+                fallback();
+              }
+            };
+            img.onerror = () => fallback();
+            img.src = url;
+          });
+      } catch (e) {
+        console.warn('画布初始化失败，使用原图', e);
+        fallback();
+      }
+    });
+  },
+
+  // 微信头像昵称填写能力：选择头像（选完即归一化，预览色与最终上传色一致）
+  async onChooseAvatar(e) {
+    const normalized = await this.normalizeImage(e.detail.avatarUrl, 400);
+    this.setData({ avatarUrl: normalized.path, avatarExt: normalized.ext });
   },
 
   // 微信头像昵称填写能力：填写昵称（input type="nickname" 唤起微信昵称）
@@ -47,18 +106,20 @@ Page({
   },
 
   // 选择问题配图（选填，最多 1 张）
-  onChooseImage() {
+  async onChooseImage() {
     wx.chooseMedia({
       count: 1,
       mediaType: ['image'],
       sizeType: ['compressed'], // 优先压缩图，节省上传流量与存储
-      success: (res) => {
+      success: async (res) => {
         const file = res.tempFiles[0];
         if (file.size > IMAGE_MAX_SIZE) {
           wx.showToast({ title: '图片不能超过5MB', icon: 'none' });
           return;
         }
-        this.setData({ questionImage: file.tempFilePath });
+        // 与原图一样做色彩归一化，避免广色域 / HEIC 图片上传后偏色
+        const normalized = await this.normalizeImage(file.tempFilePath, 1080);
+        this.setData({ questionImage: normalized.path, imageExt: normalized.ext });
       },
       fail: (e) => {
         // 用户取消选择也会进 fail，仅真正出错时提示
@@ -120,7 +181,8 @@ Page({
     const url = this.data.avatarUrl;
     if (!url) return '';
     try {
-      const ext = (url.split('.').pop() || 'png').split('?')[0];
+      // 使用归一化时记录的扩展名（成功归一化后为 jpg）
+      const ext = this.data.avatarExt || 'jpg';
       const res = await wx.cloud.uploadFile({
         cloudPath: `avatars/${Date.now()}-${Math.floor(Math.random() * 10000)}.${ext}`,
         filePath: url
@@ -159,7 +221,7 @@ Page({
   async uploadQuestionImage() {
     const url = this.data.questionImage;
     if (!url) return '';
-    const ext = (url.split('.').pop() || 'png').split('?')[0];
+    const ext = this.data.imageExt || 'jpg';
     const res = await wx.cloud.uploadFile({
       cloudPath: `vote-images/${Date.now()}-${Math.floor(Math.random() * 10000)}.${ext}`,
       filePath: url

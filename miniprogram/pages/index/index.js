@@ -5,11 +5,11 @@ const { call, formatTime, deadlineText } = require('../../utils/util.js');
 Page({
   data: {
     tabs: [
-      { key: 'all', label: '全部' },
       { key: 'active', label: '进行中' },
+      { key: 'all', label: '全部' },
       { key: 'expired', label: '已过期' }
     ],
-    tab: 'all',        // 当前 Tab
+    tab: 'active',     // 当前 Tab
     list: [],          // 列表数据
     loading: true,     // 首屏加载中（显示骨架屏）
     loadingMore: false,// 上拉加载中

@@ -1,6 +1,6 @@
 // 文件路径：miniprogram/pages/create/create.js
 // 发起投票页：头像昵称填写、问题必填限长、动态增删 2-10 个选项、过期时间校验、提交前完整校验
-const { call, normalizeImageToJpg } = require('../../utils/util.js');
+const { call } = require('../../utils/util.js');
 
 const QUESTION_MAX = 50;   // 问题最大长度
 const OPTION_MAX_LEN = 30; // 单个选项最大长度
@@ -10,9 +10,7 @@ const IMAGE_MAX_SIZE = 5 * 1024 * 1024; // 问题图片最大 5MB
 
 Page({
   data: {
-    avatarUrl: '',    // 头像（归一化后的临时路径）
-    avatarExt: 'jpg', // 头像扩展名（归一化成功为 jpg）
-    imageExt: 'jpg',  // 问题配图扩展名（归一化成功为 jpg）
+    avatarUrl: '',    // 头像（chooseAvatar 返回的临时路径）
     nickName: '',     // 昵称
     question: '',     // 投票问题
     questionImage: '',// 问题配图（本地临时路径，选填，最多 1 张）
@@ -33,22 +31,9 @@ Page({
     this.setData({ today: fmt(now), maxDate: fmt(nextYear) });
   },
 
-  /**
-   * 图片色彩归一化（封装自 utils/util.js 的 normalizeImageToJpg）
-   * 解决的问题：iOS 相册的 HEIC 格式、Display P3 广色域照片直接上传后，
-   * 渲染端按 sRGB 解码时色彩空间不匹配，会出现整体偏色（典型表现为发绿）。
-   * @param {string} url 原图临时路径
-   * @param {number} maxSize 最大边长（超出按比例缩小）
-   * @returns {Promise<{path: string, ext: string}>} 归一化后的路径与扩展名
-   */
-  normalizeImage(url, maxSize) {
-    return normalizeImageToJpg(this, '#normalizeCanvas', url, maxSize);
-  },
-
-  // 微信头像昵称填写能力：选择头像（选完即归一化，预览色与最终上传色一致）
-  async onChooseAvatar(e) {
-    const normalized = await this.normalizeImage(e.detail.avatarUrl, 400);
-    this.setData({ avatarUrl: normalized.path, avatarExt: normalized.ext });
+  // 微信头像昵称填写能力：选择头像
+  onChooseAvatar(e) {
+    this.setData({ avatarUrl: e.detail.avatarUrl });
   },
 
   // 微信头像昵称填写能力：填写昵称（input type="nickname" 唤起微信昵称）
@@ -62,20 +47,18 @@ Page({
   },
 
   // 选择问题配图（选填，最多 1 张）
-  async onChooseImage() {
+  onChooseImage() {
     wx.chooseMedia({
       count: 1,
       mediaType: ['image'],
       sizeType: ['compressed'], // 优先压缩图，节省上传流量与存储
-      success: async (res) => {
+      success: (res) => {
         const file = res.tempFiles[0];
         if (file.size > IMAGE_MAX_SIZE) {
           wx.showToast({ title: '图片不能超过5MB', icon: 'none' });
           return;
         }
-        // 与原图一样做色彩归一化，避免广色域 / HEIC 图片上传后偏色
-        const normalized = await this.normalizeImage(file.tempFilePath, 1080);
-        this.setData({ questionImage: normalized.path, imageExt: normalized.ext });
+        this.setData({ questionImage: file.tempFilePath });
       },
       fail: (e) => {
         // 用户取消选择也会进 fail，仅真正出错时提示
@@ -137,8 +120,7 @@ Page({
     const url = this.data.avatarUrl;
     if (!url) return '';
     try {
-      // 使用归一化时记录的扩展名（成功归一化后为 jpg）
-      const ext = this.data.avatarExt || 'jpg';
+      const ext = (url.split('.').pop() || 'png').split('?')[0];
       const res = await wx.cloud.uploadFile({
         cloudPath: `avatars/${Date.now()}-${Math.floor(Math.random() * 10000)}.${ext}`,
         filePath: url
@@ -177,7 +159,7 @@ Page({
   async uploadQuestionImage() {
     const url = this.data.questionImage;
     if (!url) return '';
-    const ext = this.data.imageExt || 'jpg';
+    const ext = (url.split('.').pop() || 'png').split('?')[0];
     const res = await wx.cloud.uploadFile({
       cloudPath: `vote-images/${Date.now()}-${Math.floor(Math.random() * 10000)}.${ext}`,
       filePath: url

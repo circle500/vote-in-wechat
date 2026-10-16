@@ -28,20 +28,6 @@
   color: #07c160;
   font-weight: 500;
 }
-
-/* 管理员专属入口：仅管理员可见，样式低调不干扰 Tab 栏 */
-.admin-entry {
-  position: absolute;
-  right: 24rpx;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 22rpx;
-  color: #b2b2b2;
-  padding: 8rpx 16rpx;
-  border: 1rpx solid #e5e5e5;
-  border-radius: 24rpx;
-}
-.admin-entry-hover { opacity: 0.6; }
 .tab-active::after {
   content: '';
   position: absolute;

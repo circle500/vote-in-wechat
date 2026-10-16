@@ -4,8 +4,7 @@
     "pages/create/create",
     "pages/detail/detail",
     "pages/notice/notice",
-    "pages/notice/detail",
-    "pages/repair/repair"
+    "pages/notice/detail"
   ],
   "window": {
     "navigationBarBackgroundColor": "#FFFFFF",

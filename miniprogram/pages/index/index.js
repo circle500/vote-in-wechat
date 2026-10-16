@@ -16,7 +16,6 @@ Page({
     hasMore: true,     // 是否还有下一页
     cursor: 0,         // 分页游标（上一页最后一条的 createdAt）
     serverNow: Date.now(), // 服务端时间，用于状态判定
-    isAdmin: false,    // 是否管理员（由云函数下发，用于控制管理类入口显示）
     error: ''          // 首屏加载失败提示
   },
 
@@ -63,7 +62,6 @@ Page({
         list: this.decorate(res.list, res.serverNow),
         hasMore: res.hasMore,
         serverNow: res.serverNow,
-        isAdmin: !!res.isAdmin, // 管理员标记由云函数下发，前端不可伪造
         cursor: res.list.length ? res.list[res.list.length - 1].createdAt : 0
       });
     } else {
@@ -114,11 +112,6 @@ Page({
     const idx = e.currentTarget.dataset.idx;
     const key = `list[${idx}].creatorAvatar`;
     this.setData({ [key]: '' });
-  },
-
-  // 跳转头像修复页（管理员专用；云函数端会二次校验 openid，非管理员无法使用）
-  goRepair() {
-    wx.navigateTo({ url: '/pages/repair/repair' });
   },
 
   // 跳转发起投票页

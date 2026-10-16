@@ -2,7 +2,7 @@
 <!-- 投票列表页 -->
 <view class="page">
 
-  <!-- 顶部 Tab 栏：管理员专属入口仅在服务端下发 isAdmin 时显示，普通用户完全看不到 -->
+  <!-- 顶部 Tab 栏 -->
   <view class="tab-bar">
     <view
       wx:for="{{tabs}}"
@@ -11,7 +11,6 @@
       data-key="{{item.key}}"
       bindtap="onSwitchTab"
     >{{item.label}}</view>
-    <view wx:if="{{isAdmin}}" class="admin-entry" bindtap="goRepair" hover-class="admin-entry-hover">修复</view>
   </view>
 
   <!-- 首屏加载骨架屏 -->

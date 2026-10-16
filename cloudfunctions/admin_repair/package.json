@@ -1,9 +1,0 @@
-{
-  "name": "admin_repair",
-  "version": "1.0.0",
-  "description": "管理员头像存量数据修复辅助（下载文件转base64）",
-  "main": "index.js",
-  "dependencies": {
-    "wx-server-sdk": "~2.6.3"
-  }
-}

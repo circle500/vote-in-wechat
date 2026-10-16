@@ -7,14 +7,8 @@ const _ = db.command;
 
 const PAGE_SIZE = 20; // 每页条数
 
-// 管理员白名单（与 admin_repair 保持一致）：用于前端判断是否展示管理类入口
-const ADMIN_OPENIDS = [
-  'oLuoGxlQ-xDmrpvk9GuFUjAhPdZw'
-];
-
 exports.main = async (event) => {
   const { tab = 'all', cursor = 0 } = event; // cursor 为上一页最后一条的 createdAt
-  const { OPENID } = cloud.getWXContext();
   const now = Date.now();
 
   try {
@@ -67,7 +61,6 @@ exports.main = async (event) => {
       code: 'OK',
       list,
       hasMore,
-      isAdmin: ADMIN_OPENIDS.indexOf(OPENID) !== -1, // 仅向管理员下发标记，本身不含任何敏感信息
       serverNow: now // 返回服务端时间，前端据此判定进行中/已过期，不受本地时钟影响
     };
   } catch (e) {

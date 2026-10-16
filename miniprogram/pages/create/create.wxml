@@ -90,7 +90,4 @@
   <button class="submit-btn" disabled="{{submitting}}" bindtap="onSubmit" hover-class="submit-hover">
     {{submitting ? '提交中...' : '发起投票'}}
   </button>
-
-  <!-- 离屏画布：用于把图片重新编码为标准 sRGB JPEG，修复 HEIC / Display P3 等图片偏色问题 -->
-  <canvas id="normalizeCanvas" type="2d" class="offscreen-canvas"></canvas>
 </view>

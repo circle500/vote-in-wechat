@@ -1,6 +1,6 @@
 // 文件路径：miniprogram/pages/create/create.js
 // 发起投票页：头像昵称填写、问题必填限长、动态增删 2-10 个选项、过期时间校验、提交前完整校验
-const { call } = require('../../utils/util.js');
+const { call, normalizeImageToJpg } = require('../../utils/util.js');
 
 const QUESTION_MAX = 50;   // 问题最大长度
 const OPTION_MAX_LEN = 30; // 单个选项最大长度
@@ -34,59 +34,15 @@ Page({
   },
 
   /**
-   * 图片色彩归一化：解码原图后重新编码为标准 sRGB JPEG
+   * 图片色彩归一化（封装自 utils/util.js 的 normalizeImageToJpg）
    * 解决的问题：iOS 相册的 HEIC 格式、Display P3 广色域照片直接上传后，
    * 渲染端按 sRGB 解码时色彩空间不匹配，会出现整体偏色（典型表现为发绿）。
-   * 经画布重新编码后颜色被规范化，任何机型看到的颜色都一致。
    * @param {string} url 原图临时路径
    * @param {number} maxSize 最大边长（超出按比例缩小）
    * @returns {Promise<{path: string, ext: string}>} 归一化后的路径与扩展名
    */
   normalizeImage(url, maxSize) {
-    return new Promise((resolve) => {
-      const rawExt = ((url.split('.').pop() || 'jpg').split('?')[0] || 'jpg').toLowerCase();
-      // 任何环节失败都降级为原图，绝不阻塞用户操作
-      const fallback = () => resolve({ path: url, ext: rawExt });
-      try {
-        wx.createSelectorQuery().in(this)
-          .select('#normalizeCanvas')
-          .fields({ node: true, size: true })
-          .exec((res) => {
-            const canvas = res && res[0] && res[0].node;
-            if (!canvas) return fallback();
-            const ctx = canvas.getContext('2d');
-            const img = canvas.createImage();
-            img.onload = () => {
-              try {
-                const sw = img.width || 1;
-                const sh = img.height || 1;
-                const scale = Math.min(1, maxSize / Math.max(sw, sh));
-                const w = Math.max(1, Math.round(sw * scale));
-                const h = Math.max(1, Math.round(sh * scale));
-                // 重新赋值宽高会清空画布，必须在 drawImage 之前设置
-                canvas.width = w;
-                canvas.height = h;
-                ctx.drawImage(img, 0, 0, w, h);
-                wx.canvasToTempFilePath({
-                  canvas,
-                  fileType: 'jpg',
-                  quality: 0.92,
-                  success: (r) => resolve({ path: r.tempFilePath, ext: 'jpg' }),
-                  fail: fallback
-                });
-              } catch (err) {
-                console.warn('图片归一化失败，使用原图', err);
-                fallback();
-              }
-            };
-            img.onerror = () => fallback();
-            img.src = url;
-          });
-      } catch (e) {
-        console.warn('画布初始化失败，使用原图', e);
-        fallback();
-      }
-    });
+    return normalizeImageToJpg(this, '#normalizeCanvas', url, maxSize);
   },
 
   // 微信头像昵称填写能力：选择头像（选完即归一化，预览色与最终上传色一致）

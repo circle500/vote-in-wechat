@@ -1,0 +1,45 @@
+<!-- 文件路径：miniprogram/pages/repair/repair.wxml -->
+<!-- 管理员专用：头像存量数据修复页（无公开入口） -->
+<view class="page">
+
+  <view class="header">
+    <view class="title">头像修复工具</view>
+    <view class="desc">将历史上传的 HEIC / 广色域头像重新编码为标准 JPEG（覆盖原路径，不改数据库）</view>
+  </view>
+
+  <!-- 加载中 -->
+  <view wx:if="{{loading}}" class="state">加载中...</view>
+
+  <!-- 列表 -->
+  <block wx:if="{{loaded}}">
+    <view wx:if="{{!items.length}}" class="state">没有需要修复的头像（全部已是标准格式）</view>
+
+    <block wx:else>
+      <view class="summary">
+        共 {{items.length}} 个头像
+        <text wx:if="{{doneCount}}">，已处理 {{doneCount}}（成功 {{okCount}} / 失败 {{failCount}}）</text>
+      </view>
+
+      <view class="item" wx:for="{{items}}" wx:key="voteId">
+        <view class="item-main">
+          <view class="item-question">{{item.question}}</view>
+          <view class="item-path">{{item.cloudPath}}</view>
+        </view>
+        <view class="item-status status-{{item.status}}">
+          {{item.status === 'pending' ? '待处理' : item.status === 'doing' ? '处理中' : item.status === 'ok' ? '已修复' : '失败'}}
+        </view>
+        <view wx:if="{{item.message && item.status === 'fail'}}" class="item-error">{{item.message}}</view>
+      </view>
+
+      <button
+        class="repair-btn"
+        disabled="{{repairing}}"
+        bindtap="onStartRepair"
+        hover-class="btn-hover"
+      >{{repairing ? '修复中...' : '开始修复'}}</button>
+    </block>
+  </block>
+
+  <!-- 离屏画布：用于重新编码，不能 display:none -->
+  <canvas id="repairCanvas" type="2d" class="offscreen-canvas"></canvas>
+</view>

@@ -46,7 +46,9 @@
     <!-- 选项区：进行中且未投票 → 可点击投票；否则展示结果 -->
     <view class="card">
       <block wx:if="{{active && !hasVoted}}">
-        <view class="tip">点击选项进行投票（单选，投后不可修改）</view>
+        <view class="tip">
+          {{isCreator ? '你是发起人，可查看实时结果，也可以参与投票（单选，投后不可修改）' : '点击选项进行投票（单选，投后不可修改）'}}
+        </view>
         <view
           class="option-item option-clickable"
           wx:for="{{vote.options}}"
@@ -55,9 +57,25 @@
           bindtap="onTapOption"
           hover-class="option-hover"
         >
-          <view class="option-radio"></view>
-          <view class="option-text">{{item.text}}</view>
+          <!-- 发起人特权：无需投票即可查看实时票数与百分比 -->
+          <block wx:if="{{isCreator}}">
+            <view class="option-result-head">
+              <view class="option-text option-text-inline">
+                <view class="option-radio"></view>
+                {{item.text}}
+              </view>
+              <view class="option-num">{{item.count}}票 · {{item.percent}}%</view>
+            </view>
+            <view class="percent-track">
+              <view class="percent-bar" style="width: {{item.percent}}%"></view>
+            </view>
+          </block>
+          <block wx:else>
+            <view class="option-radio"></view>
+            <view class="option-text">{{item.text}}</view>
+          </block>
         </view>
+        <view wx:if="{{isCreator}}" class="total">实时：共 {{vote.totalVotes}} 人参与</view>
       </block>
 
       <!-- 结果区：已投票或已过期 -->

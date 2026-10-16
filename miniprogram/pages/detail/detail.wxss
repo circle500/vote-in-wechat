@@ -120,6 +120,8 @@
   flex-shrink: 0;
 }
 .option-text { font-size: 30rpx; color: #1a1a1a; flex: 1; }
+/* 发起人未投票时：单选圆圈与文字同行 */
+.option-text-inline { display: flex; align-items: center; }
 
 /* 结果展示 */
 .option-result-head {

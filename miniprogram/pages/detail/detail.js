@@ -41,6 +41,7 @@ Page({
   // 渲染投票数据：计算进行中状态、百分比、操作权限
   renderVote(res) {
     const { vote, serverNow, isCreator, hasVoted, myOptionId } = res;
+    const prev = this.data.vote;
     const active = vote.expireAt >= serverNow; // 进行中：expireAt >= 当前时间
     const total = vote.totalVotes || 0;
     const options = vote.options.map(o => Object.assign({}, o, {
@@ -50,7 +51,11 @@ Page({
     this.setData({
       vote: Object.assign({}, vote, {
         options,
-        createdAtText: formatTime(vote.createdAt)
+        createdAtText: formatTime(vote.createdAt),
+        // 兜底：新数据若未带回图片/头像链接（云函数字段遗漏或临时链接生成失败），
+        // 沿用已有的可用链接，避免刷新后图片突然消失
+        questionImage: vote.questionImage || (prev && prev.questionImage) || '',
+        creatorAvatar: vote.creatorAvatar || (prev && prev.creatorAvatar) || ''
       }),
       isCreator,
       hasVoted,

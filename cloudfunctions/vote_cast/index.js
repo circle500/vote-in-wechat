@@ -60,13 +60,35 @@ exports.main = async (event) => {
 
   // 6. 返回最新结果（裁剪 openid），前端直接渲染票数与百分比
   const fresh = (await db.collection('votes').doc(voteId).get()).data;
+
+  // 头像与问题图片转临时访问链接（与 vote_detail 保持一致）：
+  // 若直接下发 cloud:// fileID，客户端受存储权限限制会加载不到他人上传的文件，
+  // 表现为投票后图片/头像消失（退出重进走 vote_detail 又恢复）
+  let creatorAvatar = fresh.creatorAvatar || '';
+  let questionImage = fresh.questionImage || '';
+  const fileIDs = [creatorAvatar, questionImage].filter(id => id && id.indexOf('cloud://') === 0);
+  if (fileIDs.length > 0) {
+    try {
+      const urlRes = await cloud.getTempFileURL({ fileList: fileIDs });
+      const urlMap = {};
+      (urlRes.fileList || []).forEach(f => {
+        if (f.status === 0) urlMap[f.fileID] = f.tempFileURL;
+      });
+      if (urlMap[creatorAvatar]) creatorAvatar = urlMap[creatorAvatar];
+      if (urlMap[questionImage]) questionImage = urlMap[questionImage];
+    } catch (e) {
+      console.error('vote_cast 临时链接生成失败', e); // 失败保留 fileID，前端有兜底
+    }
+  }
+
   return {
     code: 'OK',
     vote: {
       _id: fresh._id,
       creatorName: fresh.creatorName,
-      creatorAvatar: fresh.creatorAvatar,
+      creatorAvatar,
       question: fresh.question,
+      questionImage,                                 // 必须返回，否则投票后图片会丢失
       options: fresh.options,
       totalVotes: fresh.totalVotes,
       isMultiple: fresh.isMultiple,
